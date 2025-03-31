@@ -8,10 +8,6 @@ import { endpoints } from "../config/endpoinds";
 import { DataService } from "../config/DataService";
 
 const ActiveUser = () => {
-  // const [apiData, setApiData] = useState([]); // API dan kelgan data
-  // const [searchTerm, setSearchTerm] = useState(""); // Qidiruv so'rovi
-  // const [loading, setLoading] = useState(false); // Yuklanish holati
-  // const [searchCompleted, setSearchCompleted] = useState(false); // Qidiruv tugallanganligi haqida belgi
   const [apiData, setApiData] = useState([]); // API dan kelgan data
   const [searchTerm, setSearchTerm] = useState(""); // Qidiruv so'rovi
   const [previousPageUrl, setPreviousPageUrl] = useState(null); // Qidiruv so'rovi
@@ -34,6 +30,8 @@ const ActiveUser = () => {
       setNextPageUrl(response?.next || null); // Keyingi sahifa URL
       setPreviousPageUrl(response?.previous || null); // Oldingi sahifa URL
       setSearchCompleted(true); // Qidiruv tugallanganligini belgilash
+      localStorage.setItem("currentPageAc", page);
+      localStorage.setItem("searchTermAc", searchQuery);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -43,14 +41,20 @@ const ActiveUser = () => {
 
   // Boshlang'ich ma'lumotlarni olish
   useEffect(() => {
-    fetchData();
+    const savedPage = Number(localStorage.getItem("currentPageAc")) || 1; // Sahifani o‘qish
+    const savedSearchTerm = localStorage.getItem("searchTermAc") || ""; // Qidiruv matnini o‘qish
+
+    setCurrentPage(savedPage);
+    setSearchTerm(savedSearchTerm);
+
+    // API chaqiruv
+    fetchData(savedSearchTerm, savedPage);
   }, []);
-
   // Qidiruvni boshqarish
-
   const handleNextPage = () => {
     if (nextPageUrl) {
       const nextPage = currentPage + 1;
+      localStorage.setItem("currentPageAc", nextPage); // Sahifani saqlash
       setCurrentPage(nextPage);
       fetchData(searchTerm, nextPage); // Hozirgi qidiruv bilan keyingi sahifa
     }
@@ -59,6 +63,7 @@ const ActiveUser = () => {
   const handlePreviousPage = () => {
     if (previousPageUrl) {
       const prevPage = currentPage - 1;
+      localStorage.setItem("currentPageAc", prevPage);
       setCurrentPage(prevPage);
       fetchData(searchTerm, prevPage); // Hozirgi qidiruv bilan oldingi sahifa
     }
@@ -67,9 +72,11 @@ const ActiveUser = () => {
     const value = event.target.value;
     setSearchTerm(value); // Qidiruv matnini yangilash
     setCurrentPage(1); // Qidiruvni 1-sahifadan boshlash
+    localStorage.setItem("currentPageAc", 1); // LocalStorage'da saqlash
+    localStorage.setItem("searchTermAc", value);
     fetchData(value, 1); // Qidiruv bilan birinchi sahifa uchun API chaqiriladi
-  };
 
+  };
   return (
     <div className="flex-1 overflow-auto relative z-10">
       <Header title="Products" />

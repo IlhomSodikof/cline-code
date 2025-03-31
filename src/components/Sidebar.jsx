@@ -7,9 +7,10 @@ import { GlobalContext } from "../context/GlobalContext";
 const SIDEBAR_ITEMS = [
   { name: "Mijozlar", icon: Users, color: "#EC4899", href: "/" },
   { name: "Mijoz qo'shish", icon: UserPlus, color: "#1717e8", href: "/created_users" },
-  { name: "Fa'ol mijozlar", icon: UserCheck, color: "#10B981", href: "/active_users" },
-  { name: "Qarizdor mijozlar", icon: UserMinus, color: "#F59E0B", href: "/debtor_users" },
-  { name: "Sog'aygan mijozlar", icon: UserRound, color: "#EF4444", href: "/recovered_patients" },
+  { name: "Fa'ol mijozlar", icon: UserCheck, color: "#F59E0B", href: "/active_users" },
+  { name: "Qarizdor mijozlar", icon: UserMinus, color: "#EF4444", href: "/debtor_users" },
+  { name: "Sog'aygan mijozlar", icon: UserRound, color: "#10B981", href: "/recovered_patients" },
+  // { name: "Bildirish nimalar", icon: Bell, color: "orange", href: "/recovered_patients" },
 ];
 
 const Sidebar = () => {

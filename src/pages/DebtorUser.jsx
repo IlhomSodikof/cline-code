@@ -32,6 +32,8 @@ const DebtorUser = () => {
       setNextPageUrl(response?.next || null); // Keyingi sahifa URL
       setPreviousPageUrl(response?.previous || null); // Oldingi sahifa URL
       setSearchCompleted(true); // Qidiruv tugallanganligini belgilash
+      localStorage.setItem("currentPageDb", page);
+      localStorage.setItem("searchTermDb", searchQuery);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -40,14 +42,20 @@ const DebtorUser = () => {
   };
   // Boshlang'ich ma'lumotlarni olish
   useEffect(() => {
-    fetchData();
+    const savedPage = Number(localStorage.getItem("currentPageDb")) || 1; // Sahifani o‘qish
+    const savedSearchTerm = localStorage.getItem("searchTermDb") || ""; // Qidiruv matnini o‘qish
+
+    setCurrentPage(savedPage);
+    setSearchTerm(savedSearchTerm);
+
+    // API chaqiruv
+    fetchData(savedSearchTerm, savedPage);
   }, []);
-
   // Qidiruvni boshqarish
-
   const handleNextPage = () => {
     if (nextPageUrl) {
       const nextPage = currentPage + 1;
+      localStorage.setItem("currentPageDb", nextPage); // Sahifani saqlash
       setCurrentPage(nextPage);
       fetchData(searchTerm, nextPage); // Hozirgi qidiruv bilan keyingi sahifa
     }
@@ -56,6 +64,7 @@ const DebtorUser = () => {
   const handlePreviousPage = () => {
     if (previousPageUrl) {
       const prevPage = currentPage - 1;
+      localStorage.setItem("currentPageDb", prevPage);
       setCurrentPage(prevPage);
       fetchData(searchTerm, prevPage); // Hozirgi qidiruv bilan oldingi sahifa
     }
@@ -64,9 +73,11 @@ const DebtorUser = () => {
     const value = event.target.value;
     setSearchTerm(value); // Qidiruv matnini yangilash
     setCurrentPage(1); // Qidiruvni 1-sahifadan boshlash
+    localStorage.setItem("currentPageDb", 1); // LocalStorage'da saqlash
+    localStorage.setItem("searchTermDb", value);
     fetchData(value, 1); // Qidiruv bilan birinchi sahifa uchun API chaqiriladi
-  };
 
+  };
   return (
     <div className="flex-1 overflow-auto relative z-10">
       <Header title="Products" />

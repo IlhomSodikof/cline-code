@@ -30,6 +30,8 @@ const UsersTable = ({ apiData }) => {
               </th>
 
               <th className='px-6 py-3 text-left text-xs font-medium text-base-content uppercase tracking-wider'>
+                Tasnifi
+              </th> <th className='px-6 py-3 text-left text-xs font-medium text-base-content uppercase tracking-wider'>
                 Telefon
               </th>
               <th className='px-6 py-3 text-left text-xs font-medium text-base-content uppercase tracking-wider'>
@@ -73,11 +75,11 @@ const UsersTable = ({ apiData }) => {
                 {/* <td className='px-6 py-4 whitespace-nowrap'>
                   <div className='text-sm text-gray-300'>{user.region}</div>
                 </td> */}
-                {/* <td className='px-6 py-4 whitespace-nowrap'>
-                  <span className=' inline-flex text-xs leading-5 font-semibold rounded-full  text-blue-100'>
-                    {user.role}
+                <td className='px-6 py-4 whitespace-nowrap'>
+                  <span className=' inline-flex text-xs leading-5 font-semibold rounded-full  text-base-content'>
+                    {user.type_disease?.name}
                   </span>
-                </td> */}
+                </td>
                 <td className='px-6 py-4 whitespace-nowrap'>
                   <span className=' inline-flex text-xs leading-5 font-semibold rounded-full  text-base-content'>
                     {user?.phone_number}
@@ -85,9 +87,9 @@ const UsersTable = ({ apiData }) => {
                 </td>
                 <td className='px-6 py-4 whitespace-nowrap'>
                   <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === "Fa'ol"
-                      ? "bg-green-800 text-green-100" : user.status === "Sog'aygan" ? "bg-yellow-800 text-yellow-100"
-                        : "bg-red-800 text-red-100"
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === "debtor"
+                      ? "bg-red-500 text-green-100" : user.status === "treated" ? "bg-green-500 text-yellow-100"
+                        : "bg-yellow-500 text-red-100"
                       }`}
                   >
                     {user.status}

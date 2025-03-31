@@ -1,3 +1,4 @@
+import { Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "sonner";
 
@@ -49,7 +50,7 @@ const DeleteBtn = ({ userId }) => {
       <Toaster />
       <button className="btn-ghost bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded
       transition duration-200" onClick={handleDelete}>
-        O'chirish
+        <Trash2 className='text-white' size={24} />
       </button>
     </>
   );

@@ -693,10 +693,13 @@
 
 import { CameraIcon, Trash2 } from "lucide-react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
+import { DataService } from "../../config/DataService";
+import { endpoints } from "../../config/endpoinds";
 
 const UserFrom = () => {
+  const [boolens, setBoolen] = useState({ region: false, type: false, region_name: "Viloyat", type_name: "Turi" });
   const [formData, setFormData] = useState({
     full_name: "",
     phone_number: "",
@@ -809,29 +812,72 @@ const UserFrom = () => {
       toast.error("Yuborishda xatolik yuz berdi");
     }
   };
+  //////////////////////////////////////////
+
+  const [apiDataIn, setApiDataIn] = useState([]);
+  const fetchDataIn = async () => {
+    const response = await DataService.get(endpoints.region);
+    console.log(response, "Notifif list");
+    setApiDataIn(response);
+    // console.log(response?.results);
+
+  };
+  useEffect(() => {
+    fetchDataIn();
+
+
+  }, []);
+
+
+
+  const [apiDataDs, setApiDataDs] = useState([]);
+  const fetchDataDs = async () => {
+    const response = await DataService.get(endpoints.diseases);
+    console.log(response, "Notifif list");
+    setApiDataDs(response);
+    // console.log(response?.results);
+
+  };
+  useEffect(() => {
+    fetchDataDs();
+
+
+  }, []);
+  ///////////
 
   return (
     <form onSubmit={handleSubmit} className="p-4 mx-auto  space-y-4 border rounded-lg shadow">
       <div className="lg:p-7 lg:pb-3">
 
-        <div className="flex gap-5 "> {/* bu glavniy kichkina */}
+        <div className="flex gap-5"> {/* bu glavniy kichkina */}
 
 
-          <div className=" w-full ">
+          <div className=" w-full">
 
-            <div className="flex gap-5">
+            <div className="flex justify-between ">
 
-              <div className=" ">
+              <div className="mr-5 ">
                 {/* Photo */}
                 <div className="mt-6 w-28 h-28 border border-gray-400 rounded-md relative flex justify-center items-center">
                   <CameraIcon className="w-8 h-8 text-gray-400" />
-                  <input
-                    type="file"
-                    id="photo"
-                    name="photo"
-                    onChange={handleFileChange}
-                    className="file-input text-base-content file-input-bordered w-full absolute z-10 h-full opacity-0"
-                  />
+                  {formData?.photo ? (
+                    <img
+                      src={URL.createObjectURL(formData.photo)}
+                      alt="Uploaded"
+                      className="w-full h-full object-cover rounded-md"
+                    />
+                  ) : (
+                    <input
+                      type="file"
+                      id="photo"
+                      name="photo"
+                      onChange={handleFileChange}
+                      className="file-input text-base-content file-input-bordered w-full absolute z-10 h-full opacity-0"
+                    />
+                  )
+
+
+                  }
                 </div>
                 {/* <label htmlFor="photo" className="label px-1  w-full flex justify-center text-base-content font-medium">
                   Photo
@@ -850,7 +896,7 @@ const UserFrom = () => {
                     value={formData.full_name}
                     onChange={handleChange}
                     className="input text-base-content input-bordered w-full"
-                    placeholder="e.g., Asadbek Ismoilov"
+                    placeholder="Ism Familya"
                     required
                   />
                 </div>
@@ -866,7 +912,7 @@ const UserFrom = () => {
                     value={formData.phone_number}
                     onChange={handleChange}
                     className="input text-base-content input-bordered w-full"
-                    placeholder="e.g., +998901234567"
+                    placeholder="+998901234567"
                     required
                   />
                 </div>
@@ -879,10 +925,63 @@ const UserFrom = () => {
 
 
 
+            <div className="flex gap-4 justify-end mt-3">
+              <div className="relative inline-block text-left w-full">
+                <label className="text-base-content">
+                  Viloyat
+                </label>
+                <button type="button" className="inline-flex cursor-pointer bg-base-100  justify-start px-4 w-full rounded-md border border-gray-600 shadow-sm  py-[10px] text-sm font-medium text-base-content hover:bg-base-300 focus:outline-none"
 
+                  onClick={() => setBoolen({ ...boolens, region: !boolens.region })}
+                >
+                  {boolens.region_name}
+                </button>
+
+                {boolens.region && <div className="absolute z-50 right-0 mt-2 w-56 rounded-md shadow-lg bg-base-100  border border-gray-600">
+                  <div className="py-1">
+                    {apiDataIn?.map((item, index) => (
+                      <a
+                        key={index}
+                        href="#"
+                        className="block px-4 py-2 text-sm text-base-content hover:bg-base-300"
+                        onClick={() => { setBoolen({ ...boolens, region: !boolens.region }); setFormData({ ...formData, region: item?.id }); setBoolen({ ...boolens, region_name: item?.name }) }}
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>}
+              </div>
+              <div className="relative inline-block !text-left w-full">
+                <label className="text-base-content">
+                  Kasallik
+                </label>
+                <button type="button" className="inline-flex cursor-pointer  bg-base-100 justify-start px-2 h-[41px] w-full rounded-md border border-gray-600 shadow-sm  py-[10px] text-sm font-medium text-base-content hover:bg-base-300 focus:outline-none"
+                  onClick={() => setBoolen({ ...boolens, type: !boolens.type })}
+                >
+                  {boolens.type_name}
+                </button>
+
+                {boolens.type && <div className="absolute z-50 right-0 mt-2 w-56 rounded-md shadow-lg bg-base-100  border border-gray-600">
+                  <div className="py-1">
+                    {apiDataDs?.map((item, index) => (
+                      <a
+                        key={item?.id}
+                        href="#"
+                        className="block px-4 py-2 text-sm text-base-content hover:bg-base-300"
+                        onClick={() => { setBoolen({ ...boolens, type: !boolens.type }); setFormData({ ...formData, type_disease: item?.id }); setBoolen({ ...boolens, type_name: item?.name }) }}
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>}
+              </div>
+            </div>
 
             {/* Disease Type */}
-            <div className="mt-3">
+
+            {/* <div className="mt-3">
               <label htmlFor="type_disease" className="label px-1 text-base-content font-medium">
                 Type of Disease
               </label>
@@ -896,7 +995,7 @@ const UserFrom = () => {
                 placeholder="Enter disease ID"
                 required
               />
-            </div>
+            </div> */}
 
             {/* Face Condition */}
             <div className="mt-3">
@@ -909,7 +1008,7 @@ const UserFrom = () => {
                 value={formData.face_condition}
                 onChange={handleChange}
                 className="textarea text-base-content textarea-bordered w-full"
-                placeholder="Brief description"
+                placeholder="Tarif"
                 required
               ></textarea>
             </div>
@@ -917,7 +1016,7 @@ const UserFrom = () => {
             {/* Medications Taken */}
             <div className="mt-3">
               <label htmlFor="medications_taken" className="label px-1 text-base-content font-medium">
-                Medications Taken
+                Qo'lanilgan dorilar
               </label>
               <textarea
                 id="medications_taken"
@@ -925,7 +1024,7 @@ const UserFrom = () => {
                 value={formData.medications_taken}
                 onChange={handleChange}
                 className="textarea text-base-content textarea-bordered w-full"
-                placeholder="List of medications"
+                placeholder="Dori darmonlar ro'yhati"
                 required
               ></textarea>
             </div>
@@ -942,7 +1041,7 @@ const UserFrom = () => {
 
           <div className="w-full">
             {/* Region */}
-            <div >
+            {/* <div >
               <label htmlFor="region" className="label px-1 text-base-content font-medium">
                 Viloyat
               </label>
@@ -956,10 +1055,10 @@ const UserFrom = () => {
                 placeholder="Enter region ID"
                 required
               />
-            </div>
+            </div> */}
 
             {/* Address */}
-            <div className="mt-3">
+            <div className="">
               <label htmlFor="address" className="label px-1 text-base-content font-medium">
                 Manzil
               </label>
@@ -970,7 +1069,7 @@ const UserFrom = () => {
                 value={formData.address}
                 onChange={handleChange}
                 className="input text-base-content input-bordered w-full"
-                placeholder="e.g., Toshkent, Yunusobod tumani"
+                placeholder="Yashash manzili"
                 required
               />
             </div>
@@ -993,7 +1092,7 @@ const UserFrom = () => {
             {/* Home Care Items */}
             <div className="mt-3">
               <label htmlFor="home_care_items" className="label px-1 text-base-content font-medium">
-                Home Care Items
+                Uy uchun mualaja
               </label>
               <textarea
                 id="home_care_items"
@@ -1001,7 +1100,7 @@ const UserFrom = () => {
                 value={formData.home_care_items}
                 onChange={handleChange}
                 className="textarea text-base-content textarea-bordered w-full"
-                placeholder="e.g., Specific creams"
+                placeholder=""
                 required
               ></textarea>
             </div>

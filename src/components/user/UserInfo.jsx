@@ -7,8 +7,8 @@ const UserInfo = ({ apiData, title }) => {
   return (
     <UserSection title={title} >
 
-      <div className='mt-4 text-base-content'>
-        <p class="text-base md:text-lg lg:text-[15px] font-medium text-base-content leading-relaxed break-words max-w-full">
+      <div className='mt-2 text-base-content shadow min-h-56 p-6 rounded-md bg-base-100'>
+        <p className="custom-capitalized text-base md:text-lg lg:text-[15px] font-medium text-base-content leading-relaxed break-words max-w-full">
           {apiData}
         </p>
 

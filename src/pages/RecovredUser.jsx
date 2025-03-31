@@ -34,23 +34,30 @@ const RecovredUser = () => {
       setNextPageUrl(response?.next || null); // Keyingi sahifa URL
       setPreviousPageUrl(response?.previous || null); // Oldingi sahifa URL
       setSearchCompleted(true); // Qidiruv tugallanganligini belgilash
+      localStorage.setItem("currentPageRe", page);
+      localStorage.setItem("searchTermRe", searchQuery);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false); // Yuklanish jarayoni tugadi
     }
   };
-
   // Boshlang'ich ma'lumotlarni olish
   useEffect(() => {
-    fetchData();
+    const savedPage = Number(localStorage.getItem("currentPageRe")) || 1; // Sahifani o‘qish
+    const savedSearchTerm = localStorage.getItem("searchTermRe") || ""; // Qidiruv matnini o‘qish
+
+    setCurrentPage(savedPage);
+    setSearchTerm(savedSearchTerm);
+
+    // API chaqiruv
+    fetchData(savedSearchTerm, savedPage);
   }, []);
-
   // Qidiruvni boshqarish
-
   const handleNextPage = () => {
     if (nextPageUrl) {
       const nextPage = currentPage + 1;
+      localStorage.setItem("currentPageRe", nextPage); // Sahifani saqlash
       setCurrentPage(nextPage);
       fetchData(searchTerm, nextPage); // Hozirgi qidiruv bilan keyingi sahifa
     }
@@ -59,6 +66,7 @@ const RecovredUser = () => {
   const handlePreviousPage = () => {
     if (previousPageUrl) {
       const prevPage = currentPage - 1;
+      localStorage.setItem("currentPageRe", prevPage);
       setCurrentPage(prevPage);
       fetchData(searchTerm, prevPage); // Hozirgi qidiruv bilan oldingi sahifa
     }
@@ -67,9 +75,11 @@ const RecovredUser = () => {
     const value = event.target.value;
     setSearchTerm(value); // Qidiruv matnini yangilash
     setCurrentPage(1); // Qidiruvni 1-sahifadan boshlash
+    localStorage.setItem("currentPageRe", 1); // LocalStorage'da saqlash
+    localStorage.setItem("searchTermRe", value);
     fetchData(value, 1); // Qidiruv bilan birinchi sahifa uchun API chaqiriladi
-  };
 
+  };
   return (
     <div className="flex-1 overflow-auto relative z-10">
       <Header title="Products" />
@@ -83,7 +93,7 @@ const RecovredUser = () => {
           transition={{ delay: 0.2 }}
         >
           <div className="flex justify-between items-center mb-6 px-6">
-            <Bredcamp title={"Fa'ol mijozlar"} />
+            <Bredcamp title={"Sog'aygan mijozlar"} />
             <div className="relative">
               <input
                 type="text"

@@ -23,7 +23,7 @@ const HomePage = () => {
   const [apiData, setApiData] = useState([]); // API dan kelgan data
   const [searchTerm, setSearchTerm] = useState(""); // Qidiruv so'rovi
   const [previousPageUrl, setPreviousPageUrl] = useState(null); // Qidiruv so'rovi
-  const [currentPage, setCurrentPage] = useState(1); // Qidiruv so'rovi
+  const [currentPage, setCurrentPage] = useState(); // Qidiruv so'rovi
   const [totalCount, setTotalCount] = useState(null); // Qidiruv so'rovi
   const [nextPageUrl, setNextPageUrl] = useState(null); // Qidiruv so'rovi
   const [loading, setLoading] = useState(false); // Yuklanish holati
@@ -61,6 +61,9 @@ const HomePage = () => {
       setNextPageUrl(response?.next || null); // Keyingi sahifa URL
       setPreviousPageUrl(response?.previous || null); // Oldingi sahifa URL
       setSearchCompleted(true); // Qidiruv tugallanganligini belgilash
+      localStorage.setItem("currentPage", page);
+      localStorage.setItem("searchTerm", searchQuery);
+
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -68,20 +71,26 @@ const HomePage = () => {
     }
   };
   // Boshlang'ich ma'lumotlarni olish
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
   useEffect(() => {
-    fetchData();
+    const savedPage = Number(localStorage.getItem("currentPage")) || 1; // Sahifani o‘qish
+    const savedSearchTerm = localStorage.getItem("searchTerm") || ""; // Qidiruv matnini o‘qish
+
+    setCurrentPage(savedPage);
+    setSearchTerm(savedSearchTerm);
+
+    // API chaqiruv
+    fetchData(savedSearchTerm, savedPage);
   }, []);
 
-  // Qidiruvni boshqarish
-  // const handleSearch = (event) => {
-  //   const value = event.target.value;
-  //   setSearchTerm(value); // Qidiruv so'rovini saqlash
-  //   fetchData(value); // Qidiruv API chaqirish
-  // };
+
 
   const handleNextPage = () => {
     if (nextPageUrl) {
       const nextPage = currentPage + 1;
+      localStorage.setItem("currentPage", nextPage); // Sahifani saqlash
       setCurrentPage(nextPage);
       fetchData(searchTerm, nextPage); // Hozirgi qidiruv bilan keyingi sahifa
     }
@@ -90,6 +99,7 @@ const HomePage = () => {
   const handlePreviousPage = () => {
     if (previousPageUrl) {
       const prevPage = currentPage - 1;
+      localStorage.setItem("currentPage", prevPage);
       setCurrentPage(prevPage);
       fetchData(searchTerm, prevPage); // Hozirgi qidiruv bilan oldingi sahifa
     }
@@ -98,7 +108,10 @@ const HomePage = () => {
     const value = event.target.value;
     setSearchTerm(value); // Qidiruv matnini yangilash
     setCurrentPage(1); // Qidiruvni 1-sahifadan boshlash
+    localStorage.setItem("currentPage", 1); // LocalStorage'da saqlash
+    localStorage.setItem("searchTerm", value);
     fetchData(value, 1); // Qidiruv bilan birinchi sahifa uchun API chaqiriladi
+
   };
   return (
     <div className="flex-1 overflow-auto relative z-10">
@@ -116,15 +129,18 @@ const HomePage = () => {
             icon={UsersIcon}
             value={apiDataSt?.total_patients}
             color='#6366F1'
+            bgColor={"all"}
           />
-          <StatCard name="Fa'ol mijozlar" icon={UserCheck} value={apiDataSt?.paid} color='#10B981' />
+          <StatCard name="Fa'ol mijozlar" icon={UserCheck} value={apiDataSt?.paid} color='#f67f05' bgColor={"active"} />
           <StatCard
             name="Qarizdor mijozlar"
             icon={UserMinus}
             value={apiDataSt?.debtor}
-            color='#F59E0B'
+            color='#EF4444'
+            bgColor={"debtor"}
+
           />
-          <StatCard name="Sog'aygan mijozlar" icon={UserRound} value={apiDataSt?.treated} color='#EF4444' />
+          <StatCard name="Sog'aygan mijozlar" icon={UserRound} value={apiDataSt?.treated} color='#10B981' bgColor={"recovered"} />
         </motion.div>
         {/* USER TABLE */}
         <motion.div

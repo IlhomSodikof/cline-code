@@ -31,16 +31,18 @@ const UserProfile = () => {
   return (
     <div className='flex-1 overflow-auto relative z-10 '>
       <Header title='Settings' />
-      <main className=' mx-auto py-6 px-4 lg:px-8'>
+      <main className='flex mx-auto py-6 px-4 lg:px-8'>
         <UserHeader apiData={apiData} />
+        <div className="w-full">
+          <UserInfo apiData={apiData?.face_condition} title={"Yuz holati"} />
+          <UserInfo apiData={apiData?.home_care_items} title={"Uy uchun muolaja"} />
+          <UserInfo apiData={apiData?.medications_taken} title={"Qo'llanilgan preparatlar"} />
+        </div>
 
-        <UserInfo apiData={apiData?.face_condition} title={"Yuz holati"} />
-        <UserInfo apiData={apiData?.home_care_items} title={"Uy uchun muolaja"} />
-        <UserInfo apiData={apiData?.medications_taken} title={"Qo'llanilgan preparatlar"} />
         {/* <Notifications /> */}
 
         {/* <ConnectedAccounts /> */}
-        <DangerZone apiData={apiData} />
+
       </main>
     </div>
   );

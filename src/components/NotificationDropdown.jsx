@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { Bell } from 'lucide-react';
+import { Bell, Phone } from 'lucide-react';
 import { DataService } from "../config/DataService";
 import { endpoints } from "../config/endpoinds";
+import { Link } from "react-router-dom";
 
 
 
@@ -97,7 +98,7 @@ const NotificationDropdown = () => {
 
       {/* Dropdown Start */}
       {dropdownOpen && (
-        <div className="shadow-theme-lg  absolute  -right-[240px] mt-[17px] flex h-[480px] w-[350px] flex-col rounded-2xl shadow-md bg-base-300 p-3 sm:w-[361px] lg:right-0 ">
+        <div className="shadow-theme-lg  absolute  -right-[240px] mt-[17px] flex h-[480px] w-[350px] flex-col rounded-2xl shadow-lg my-background  p-3 sm:w-[361px] lg:right-0 bg-notifi">
           <div className="mb-3 flex items-center justify-between border-b border-base-100 pb-3 ">
             <h5 className="text-md font-semibold text-base-content ml-4">
               Notification
@@ -134,7 +135,7 @@ const NotificationDropdown = () => {
             {apiDataIn?.map((item) =>
               <li key={item?.id}>
                 <a
-                  className="flex gap-3  border-b border-base-100 p-3 px-4.5 py-3 "
+                  className="flex gap-6 items-center  border-b border-base-100 p-3 px-4.5 py-3 "
                   href="#"
                 >
                   <span className="relative z-1 block h-10 bg-base-100 shadow-md w-full max-w-10 rounded-full">
@@ -152,17 +153,16 @@ const NotificationDropdown = () => {
                     <span className="text-theme-sm mb-1.5 block text-gray-500">
                       <span className="font-medium text-base-content">
                         {item?.full_name}
-                      </span>{" "}
-                      murojat sababi:{" "}
+                      </span>{" "} <br />
                       <span className="font-medium text-base-content">
-                        {item?.type_disease?.name}
+                        murojat sababi:{" "} {item?.type_disease?.name}
                       </span>
                     </span>
                     <span className="text-theme-xs flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                      <span>kelish vaqti</span>
-                      <span className="h-1 w-1 animate-ping rounded-full bg-gray-400"></span>
-                      <span className="">{
-                        formatDate(item?.created_at)
+                      <span className="flex gap-1 items-center text-orange-600"><Phone size={16} /> Telefon</span>
+                      <span className="h-1 w-1 animate-ping rounded-full bg-orange-400"></span>
+                      <span className="text-blue-500">{
+                        item?.phone_number
                       }</span>
                     </span>
                   </span>
@@ -172,12 +172,12 @@ const NotificationDropdown = () => {
             {/* Add More Notifications Here */}
           </ul>
 
-          {/* <a
-            href="#"
-            className="text-theme-sm  bottom-0  shadow-theme-xs mt-3 flex justify-center rounded-lg border border-gray-300 bg-base-200 p-3 font-medium text-base-content hover:bg-gray-50 hover:text-base-content "
+          <Link
+            to="/notification"
+            className="text-theme-sm  bottom-0  shadow-theme-xs mt-3 flex justify-center rounded-lg  bg-[orange] text-white p-3 font-medium  hover:bg-orange-400 "
           >
-            View All Notifications
-          </a> */}
+            To'liq ro'yxat
+          </Link>
         </div>
       )}
       {/* Dropdown End */}

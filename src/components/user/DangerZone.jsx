@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trash2 } from "lucide-react";
+import { Trash2, TriangleAlert } from "lucide-react";
 import DeleteBtn from "./DelateBtn";
 
 const DangerZone = ({ apiData }) => {
@@ -11,17 +11,13 @@ const DangerZone = ({ apiData }) => {
       transition={{ duration: 0.5, delay: 0.2 }}
     >
       <div className='flex items-center mb-4'>
-        <Trash2 className='text-white mr-3' size={24} />
-        <h2 className='text-xl font-semibold text-gray-100'>Xavfli hudud (Danger Zone)</h2>
+        <TriangleAlert className='text-white mr-3' size={24} />
+        {/* <Trash2 className='text-white mr-3' size={24} /> */}
+        <h2 className='text-lg font-semibold text-gray-100'>Xavfli hudud</h2>
       </div>
       <p className='text-gray-300 mb-4'>
-        Mijoz hisobini  va undagi barcha kontentni butunlay o‘chiring.</p>
-      {/* <button
-        className='bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded
-      transition duration-200'
-      >
-        Profilni o'chirish
-      </button> */}
+        Mijoz ning barcha malumotlari o'chiriladi !.</p>
+
       <DeleteBtn userId={apiData?.id} />
     </motion.div>
   );
