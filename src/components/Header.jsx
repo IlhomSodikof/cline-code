@@ -28,6 +28,8 @@ const Header = () => {
     localStorage.removeItem("authToken");
     dispatch({ type: "LOGOUT" });
     navigate("/login");
+    localStorage.clear();
+    location.reload();
   }, [navigate]);
 
 

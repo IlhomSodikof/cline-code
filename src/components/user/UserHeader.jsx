@@ -1,15 +1,16 @@
-import { User, Camera, CircleAlert, CircleCheckBig, OctagonX, MapPin, Phone, MapPinHouse, Activity, Stethoscope, CalendarFold } from "lucide-react";
+import { User, Camera, CircleAlert, CircleCheckBig, OctagonX, MapPin, Phone, MapPinHouse, Activity, Stethoscope, CalendarFold, SquarePen } from "lucide-react";
 import UserSection from "./UserSection";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 // import { endpoints } from "../config/endpoints";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { endpoints } from "../../config/endpoinds";
 import { DataService } from "../../config/DataService";
 import DangerZone from "./DangerZone";
 import PaymentForm from "../PaymentForm";
 
 const UserHeader = ({ apiData }) => {
+  const navigate = useNavigate()
   const formatDate = (dateString) => {
     const dateObject = new Date(dateString);
 
@@ -24,7 +25,7 @@ const UserHeader = ({ apiData }) => {
     // Formatlangan vaqt
     return `${day}.${month}.${year} ${hour}:${minute}:${second}`;
   };
-  const route = useParams()
+  // const route = useParams()
   console.log("ichkarida", apiData);
 
   const [apiDataIn, setApiDataIn] = useState(null);
@@ -65,29 +66,21 @@ const UserHeader = ({ apiData }) => {
     }
   };
 
-  const [formData, setFormData] = useState({
-    name: "Ganiyeva Gulchexra",
-    address: "Tashkent",
-    email: "Guli.chex@gmail.com",
-    phone: "+998 99 999 99 99",
-    date: "2025-03-23",
-    profilePic: "https://randomuser.me/api/portraits/men/3.jpg", // Boshlang'ich surat
-    status: "Sog'aygan"
-  });
-  const [isEditing, setIsEditing] = useState(true); // Tahrirlash rejimi
 
 
 
+  useEffect(() => {
+    console.log("zzz");
 
+  }, [apiData?.total_paid]);
 
-  const toggleEditMode = () => setIsEditing(!isEditing); // Tahrirlash rejimini almashtirish
 
   return (
     <>
       {/* {isEditing ? ( */}
       <UserSection icon={User} title={"Mijoz ma'lumotlari"}>
         <div className='flex flex-col  gap-5 w-full'>
-          <div className="flex items-center w-96 flex-col gap-5 border  border-base-300 shadow-xl bg-base-100 rounded-md p-5">
+          <div className="flex items-center w-[400px] flex-col gap-5 border  border-base-300 shadow-xl bg-base-100 rounded-md p-5">
             <img
               src={apiData?.photo ? apiData.photo : "https://randomuser.me/api/portraits/men/3.jpg"}
               alt='Profile'
@@ -114,13 +107,12 @@ const UserHeader = ({ apiData }) => {
 
           <div>
             <h2 className="text-base-content font-semibold text-lg">To'lovlar</h2>
-            <div className="flex flex-col gap-5 border border-base-300 bg-base-100 w-96 shadow-xl p-7 rounded-md text-base-content">
+            <div className="flex flex-col gap-5 border border-base-300 bg-base-100 w-[400px] shadow-xl p-7 rounded-md text-base-content">
 
               <ul>
                 <li className="text-base-content flex items-center justify-between  gap-2"><span className="flex items-center gap-2"> Umumiy miqdor:</span> {apiData?.total_payment_due} so'm</li>
                 <li className="text-base-content flex items-center justify-between  gap-2"><span className="flex items-center gap-2"> To'langan qisim:</span> {apiData?.total_paid} so'm</li>
                 <li className={`${apiData?.remaining_debt < 0 ? "text-red-500" : "text-base-content"} text-base-content flex items-center justify-between  gap-2`}><span className="flex items-center gap-2"> To'lanmagan qisim:</span> {apiData?.remaining_debt} so'm</li>
-                <li className="text-base-content flex items-center justify-between  gap-2"><span className="flex items-center gap-2"> Telefon:</span> {apiData?.phone_number}</li>
 
               </ul>
               <PaymentForm id={apiData?.id} />
@@ -131,19 +123,18 @@ const UserHeader = ({ apiData }) => {
 
           <div>
             <h2 className="text-base-content font-semibold text-lg">Yangilanishlar</h2>
-            <div className="flex flex-col gap-5 border border-base-300 bg-base-100 w-96 shadow-xl p-7 rounded-md text-base-content">
-              {apiDataIn ? (
-                <p className="text-base-content">Status: {apiDataIn?.message}</p>
-              ) : (
-                <p className="text-base-content">{isLoading ? "Yuklanmoqda..." : "Statusni yangilash uchun tugmani bosing."}</p>
-              )}
+            <div className="flex  gap-5 border border-base-300 bg-base-100 w-[400px] shadow-xl p-7 rounded-md text-base-content">
+
               <button
-                onClick={() => fetchData(apiData?.id)}
+                onClick={() => { fetchData(apiData?.id); location.reload() }}
                 disabled={isLoading || apiData?.status == "treated"}
-                className={`px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 ${apiData?.status == "treated" ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`px-4 py-2 bg-green-500 flex justify-center w-full h-12 text-white rounded hover:bg-green-600 ${apiData?.status == "treated" ? "opacity-50 cursor-not-allowed" : ""}`}
               >
-                {isLoading ? "Yuklanmoqda..." : "Statusni Yangilash"}
+                {isLoading ? (<div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>) : "Statusni Yangilash"}
               </button>
+              <button className="px-4 py-2 w-full h-12 bg-indigo-500 flex justify-center items-center text-white rounded hover:bg-indigo-600"
+                onClick={() => navigate(`/update_user/${apiData?.id}`)}
+              >  <SquarePen size={20} /></button>
             </div>
           </div>
 

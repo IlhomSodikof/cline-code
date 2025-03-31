@@ -806,6 +806,19 @@ const UserFrom = () => {
 
       const result = await response.json();
       toast.success("Ma'lumot muvaffaqiyatli yuborildi!");
+      setFormData({
+        full_name: "",
+        phone_number: "",
+        region: "",
+        address: "",
+        type_disease: "",
+        face_condition: "",
+        medications_taken: "",
+        home_care_items: "",
+        total_payment_due: "",
+        photo: null,
+        appointments: [{ appointment_time: "" }],
+      });
       console.log(result);
     } catch (error) {
       console.error("Xatolik:", error);
@@ -859,7 +872,7 @@ const UserFrom = () => {
               <div className="mr-5 ">
                 {/* Photo */}
                 <div className="mt-6 w-28 h-28 border border-gray-400 rounded-md relative flex justify-center items-center">
-                  <CameraIcon className="w-8 h-8 text-gray-400" />
+                  {!formData?.photo ? (<CameraIcon className="w-8 h-8 text-gray-400" />) : ""}
                   {formData?.photo ? (
                     <img
                       src={URL.createObjectURL(formData.photo)}
@@ -938,13 +951,13 @@ const UserFrom = () => {
                 </button>
 
                 {boolens.region && <div className="absolute z-50 right-0 mt-2 w-56 rounded-md shadow-lg bg-base-100  border border-gray-600">
-                  <div className="py-1">
+                  <div className="py-1 min-h-30">
                     {apiDataIn?.map((item, index) => (
                       <a
                         key={index}
                         href="#"
-                        className="block px-4 py-2 text-sm text-base-content hover:bg-base-300"
-                        onClick={() => { setBoolen({ ...boolens, region: !boolens.region }); setFormData({ ...formData, region: item?.id }); setBoolen({ ...boolens, region_name: item?.name }) }}
+                        className="block px-4 py-2  text-sm text-base-content hover:bg-base-300"
+                        onClick={() => { setBoolen({ ...boolens, region: false, region_name: item?.name }); setFormData({ ...formData, region: item?.id }) }}
                       >
                         {item.name}
                       </a>
@@ -962,20 +975,20 @@ const UserFrom = () => {
                   {boolens.type_name}
                 </button>
 
-                {boolens.type && <div className="absolute z-50 right-0 mt-2 w-56 rounded-md shadow-lg bg-base-100  border border-gray-600">
-                  <div className="py-1">
+                {boolens.type ? (<div className="absolute z-50 right-0 mt-2 w-56 rounded-md shadow-lg bg-base-100  border border-gray-600">
+                  <div className="py-1 min-h-30">
                     {apiDataDs?.map((item, index) => (
                       <a
                         key={item?.id}
                         href="#"
                         className="block px-4 py-2 text-sm text-base-content hover:bg-base-300"
-                        onClick={() => { setBoolen({ ...boolens, type: !boolens.type }); setFormData({ ...formData, type_disease: item?.id }); setBoolen({ ...boolens, type_name: item?.name }) }}
+                        onClick={() => { setBoolen({ ...boolens, type: false, type_name: item?.name }); setFormData({ ...formData, type_disease: item?.id }) }}
                       >
                         {item.name}
                       </a>
                     ))}
                   </div>
-                </div>}
+                </div>) : ""}
               </div>
             </div>
 
@@ -1029,15 +1042,7 @@ const UserFrom = () => {
               ></textarea>
             </div>
 
-
-
-
-
-
           </div>
-
-
-
 
           <div className="w-full">
             {/* Region */}

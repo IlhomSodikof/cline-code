@@ -12,6 +12,7 @@ import ActiveUser from "./pages/ActiveUser";
 import DebtorUser from "./pages/DebtorUser";
 import RecovredUser from "./pages/RecovredUser";
 import NotifiPage from "./pages/NotifiPage";
+import UpdateUser from "./pages/UpdateUser";
 
 
 
@@ -34,6 +35,7 @@ function App() {
         { path: "/debtor_users", element: <DebtorUser /> },
         { path: "/recovered_patients", element: <RecovredUser /> },
         { path: "/notification", element: <NotifiPage /> },
+        { path: "/update_user/:id", element: <UpdateUser /> },
         { path: "/details/:id", element: <UserProfile /> },
       ],
     },

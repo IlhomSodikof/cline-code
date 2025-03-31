@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast, Toaster } from "sonner";
+
 
 const PaymentForm = ({ id }) => {
   const [amount, setAmount] = useState("");
@@ -26,21 +28,30 @@ const PaymentForm = ({ id }) => {
 
       if (!response.ok) {
         throw new Error(`HTTP Error: ${response.status}`);
+        toast.error(response.status);
+
       }
 
       const result = await response.json();
       setResponseMessage("To'lov muvaffaqiyatli amalga oshirildi!");
+      toast.success("To'lov muvaffaqiyatli amalga oshirildi!");
+      setAmount("");
       console.log("Response:", result);
+      location.reload();
+
     } catch (error) {
       console.error("Error processing payment:", error);
       setResponseMessage("Xatolik yuz berdi. Qayta urinib ko'ring.");
+      toast.error("Xatolik yuz berdi. Qayta urinib ko'ring.");
     } finally {
       setIsLoading(false);
     }
   };
 
+
   return (
     <div>
+      {/* <Toaster /> */}
       {/* <h1 className="text-base-content text-lg">To'lovni amalga oshirish</h1> */}
       <input
         type="number"
@@ -50,11 +61,11 @@ const PaymentForm = ({ id }) => {
         className="border border-base-300 rounded w-full p-2 mb-2 bg-base-300 text-base-content"
       />
       <button
-        onClick={handlePayment}
+        onClick={() => handlePayment()}
         disabled={isLoading || !amount} // Yuzlanayotgan holatda yoki summa kiritilmagan bo'lsa tugma faolsiz
-        className="px-4 py-2 bg-[orange] text-white rounded hover:bg-orange-500"
+        className="px-4 w-25 flex justify-center py-2 bg-[orange] text-white rounded hover:bg-orange-500"
       >
-        {isLoading ? "Yuklanmoqda..." : "To'lash"}
+        {isLoading ? (<div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>) : "To'lash"}
       </button>
 
     </div>
