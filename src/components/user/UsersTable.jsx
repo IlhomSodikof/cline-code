@@ -67,7 +67,10 @@ const UsersTable = ({ apiData }) => {
                       )}
                     </div>
                     <div className='ml-4'>
-                      <div className='text-sm font-medium text-base-content'>{user?.full_name}</div>
+                      <div className='text-sm font-medium text-base-content cursor-pointer hover:text-blue-400'
+                        onClick={() => navigate(`/details/${user?.id}`)} >
+                        {user?.full_name}
+                      </div>
                     </div>
                   </div>
                 </td>
@@ -87,18 +90,18 @@ const UsersTable = ({ apiData }) => {
                 </td>
                 <td className='px-6 py-4 whitespace-nowrap'>
                   <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === "debtor"
+                    className={`p-[2px] flex justify-center text-xs leading-5 font-semibold w-20 rounded-full ${user.status === "debtor"
                       ? "bg-red-500 text-green-100" : user.status === "treated" ? "bg-green-500 text-yellow-100"
                         : "bg-yellow-500 text-red-100"
                       }`}
                   >
-                    {user.status}
+                    {user.status == "debtor" ? "qarizdor" : user.status === "treated" ? "davolangan" : "to'langan"}
                   </span>
                 </td>
 
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
                   {/* <Link to={`/details`}> */}
-                  <button className='text-indigo-400 hover:text-indigo-300' onClick={() => navigate(`/details/${user?.id}`)}>info</button>
+                  <button className='text-indigo-400 cursor-pointer hover:text-indigo-300' onClick={() => navigate(`/details/${user?.id}`)}>info</button>
                   {/* </Link> */}
 
                 </td>

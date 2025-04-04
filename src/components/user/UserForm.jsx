@@ -871,7 +871,7 @@ const UserFrom = () => {
 
               <div className="mr-5 ">
                 {/* Photo */}
-                <div className="mt-6 w-28 h-28 border border-gray-400 rounded-md relative flex justify-center items-center">
+                {/* <div className="mt-6 w-28 h-28 border border-gray-400 rounded-md relative flex justify-center items-center">
                   {!formData?.photo ? (<CameraIcon className="w-8 h-8 text-gray-400" />) : ""}
                   {formData?.photo ? (
                     <img
@@ -891,6 +891,24 @@ const UserFrom = () => {
 
 
                   }
+                </div> */}
+                <div className="mt-6 w-28 h-28 border border-gray-400 rounded-md !bg-cover !bg-no-repeat relative bg-center flex justify-center items-center" style={{
+                  backgroundImage: formData?.photo ? `url(${URL.createObjectURL(formData.photo)})` : "https://img.favpng.com/10/24/2/computer-icons-user-icon-design-male-png-favpng-grqs7j1MENUsCah7VD6XBWVst.jpg"
+                }}
+                >
+                  <CameraIcon className="w-8 h-8 text-base-content" />
+
+                  <input
+                    type="file"
+                    id="photo"
+                    name="photo"
+                    onChange={handleFileChange}
+                    className="file-input text-base-content bg-transparent file-input-bordered w-full absolute z-10 h-full opacity-0"
+                  />
+
+
+
+
                 </div>
                 {/* <label htmlFor="photo" className="label px-1  w-full flex justify-center text-base-content font-medium">
                   Photo
@@ -1133,7 +1151,7 @@ const UserFrom = () => {
               onClick={addAppointment}
               className="btn bg-green-500 text-white btn-sm"
             >
-              Add Appointment
+              Sana qo'shish
             </button>
           </div>
 
@@ -1149,7 +1167,7 @@ const UserFrom = () => {
 
         {/* Submit Button */}
         <button type="submit" className="btn my-7 py-5 bg-[orange] text-white w-full">
-          Submit
+          Saqlash
         </button>
       </div>
     </form >

@@ -8,43 +8,48 @@ import { DataService } from "../../config/DataService";
 import { endpoints } from "../../config/endpoinds";
 
 const UserUpdateForm = ({ id }) => {
-
+  const [pato, setPato] = useState()
   const [apiData, setApiData] = useState([]);
   const [formData, setFormData] = useState({
     full_name: apiData?.full_name,
     phone_number: apiData?.phone_number,
-    region: apiData?.region?.name,
+    region: apiData?.region?.id,
     address: apiData?.address,
-    type_disease: apiData?.type_disease?.name,
+    type_disease: apiData?.type_disease?.id,
     face_condition: apiData?.face_condition,
     medications_taken: apiData?.medications_taken,
     home_care_items: apiData?.home_care_items,
     total_payment_due: apiData?.total_payment_due,
-    photo: apiData?.photo,
+    photo: null,
     appointments: [{ appointment_time: "" }],
   });
   const fetchData = async () => {
     const response = await DataService.get(endpoints.patientByid(id));
-    console.log(response, "havolalar user details upda");
+    console.log(response, "havolalar user details update");
     setApiData(response);
     // console.log(response?.results);
+    response?.appointments?.forEach((item) => {
+      console.log(response?.appointments[0].appointment_time, "update");
 
+    })
   };
   useEffect(() => {
     fetchData();
     setFormData({
       full_name: apiData?.full_name,
       phone_number: apiData?.phone_number,
-      region: apiData?.region?.name,
+      region: apiData?.region?.id,
       address: apiData?.address,
-      type_disease: apiData?.type_disease?.name,
+      type_disease: apiData?.type_disease?.id,
       face_condition: apiData?.face_condition,
       medications_taken: apiData?.medications_taken,
       home_care_items: apiData?.home_care_items,
       total_payment_due: apiData?.total_payment_due,
-      photo: apiData?.photo,
-      appointments: [{ appointment_time: "" }],
+      photo: null,
+      appointments: apiData?.appointments || [{ appointment_time: "" }],
     })
+    setBoolen({ ...boolens, region_name: apiData?.region?.name ? apiData?.region?.name : "Viloyat", type_name: apiData?.type_disease?.name ? apiData?.type_disease?.name : "Turi" });
+
 
   }, [id]);
   useEffect(() => {
@@ -52,16 +57,19 @@ const UserUpdateForm = ({ id }) => {
       setFormData({
         full_name: apiData.full_name || "",
         phone_number: apiData.phone_number || "",
-        region: apiData.region?.name || "",
+        region: apiData.region?.id || "",
         address: apiData.address || "",
-        type_disease: apiData.type_disease?.name || "",
+        type_disease: apiData.type_disease?.id || "",
         face_condition: apiData.face_condition || "",
         medications_taken: apiData.medications_taken || "",
         home_care_items: apiData.home_care_items || "",
         total_payment_due: apiData.total_payment_due || 0,
-        photo: apiData.photo || null,
-        appointments: [{ appointment_time: "" }],
+        photo: null,
+        appointments: apiData?.appointments || [{ appointment_time: "" }],
+
       });
+      setBoolen({ ...boolens, region_name: apiData?.region?.name ? apiData?.region?.name : "Viloyat", type_name: apiData?.type_disease?.name ? apiData?.type_disease?.name : "Turi" });
+
     }
   }, [apiData]);
 
@@ -74,10 +82,7 @@ const UserUpdateForm = ({ id }) => {
 
   const [boolens, setBoolen] = useState({ region: false, type: false, region_name: "Viloyat", type_name: "Turi" });
 
-  const DropChange = () => {
 
-    setBoolen(() => ({ ...boolens, type: false }))
-  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -85,6 +90,7 @@ const UserUpdateForm = ({ id }) => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setPato(file)
     if (file) {
       console.log("Tanlangan fayl:", file); // Fayl obyektini log qilish
       console.log("Fayl turi:", file.type);
@@ -92,7 +98,7 @@ const UserUpdateForm = ({ id }) => {
 
       setFormData((prev) => ({ ...prev, photo: file }));
     } else {
-      setFormData((prev) => ({ ...prev, photo: apiData?.photo }));
+      // setFormData((prev) => ({ ...prev, photo: apiData?.photo }));
     }
   };
 
@@ -191,16 +197,19 @@ const UserUpdateForm = ({ id }) => {
     setFormData({
       full_name: apiData?.full_name,
       phone_number: apiData?.phone_number,
-      region: apiData?.region?.name,
+      region: apiData?.region?.id,
       address: apiData?.address,
-      type_disease: apiData?.type_disease?.name,
+      type_disease: apiData?.type_disease?.id,
       face_condition: apiData?.face_condition,
       medications_taken: apiData?.medications_taken,
       home_care_items: apiData?.home_care_items,
       total_payment_due: apiData?.total_payment_due,
-      photo: apiData?.photo,
-      appointments: [{ appointment_time: "" }],
+      photo: null,
+      appointments: apiData?.appointments || [{ appointment_time: "" }],
+
     })
+    setFormData({ ...formData, region: apiData?.region?.id ? apiData?.region?.id : null, type_disease: apiData?.type_disease?.id ? apiData?.type_disease?.id : null })
+    setBoolen({ ...boolens, region_name: apiData?.region?.name ? apiData?.region?.name : "Viloyat", type_name: apiData?.type_disease?.name ? apiData?.type_disease?.name : "Turi" });
     fetchDataIn();
 
 
@@ -222,7 +231,14 @@ const UserUpdateForm = ({ id }) => {
 
   }, []);
   ///////////
+  console.log(formData.appointments);
+  const formatDateTime = (date) => {
+    console.log(date);
+    if (date) {
+      return new Date(date).toISOString().slice(0, 16);
 
+    }
+  };
   return (
     <form onSubmit={handleSubmit} className="p-4 mx-auto  space-y-4 border rounded-lg shadow">
       <div className="lg:p-7 lg:pb-3">
@@ -237,17 +253,17 @@ const UserUpdateForm = ({ id }) => {
               <div className="mr-5 ">
                 {/* Photo */}
                 <div className="mt-6 w-28 h-28 border border-gray-400 rounded-md !bg-cover !bg-no-repeat relative bg-center flex justify-center items-center" style={{
-                  // backgroundImage: formData?.photo ? `url(${URL.createObjectURL(formData.photo)})` : ""
+                  backgroundImage: pato ? `url(${URL.createObjectURL(pato)})` : `url(${apiData?.photo})`,
                 }}
                 >
-                  {!formData?.photo ? (<CameraIcon className="w-8 h-8 text-gray-400" />) : ""}
+                  <CameraIcon className="w-8 h-8 text-base-content" />
 
                   <input
                     type="file"
                     id="photo"
                     name="photo"
                     onChange={handleFileChange}
-                    className="file-input text-base-content file-input-bordered w-full absolute z-10 h-full opacity-0"
+                    className="file-input text-base-content bg-transparent file-input-bordered w-full absolute z-10 h-full opacity-0"
                   />
 
 
@@ -318,7 +334,9 @@ const UserUpdateForm = ({ id }) => {
                       <a
                         key={index}
                         className="block px-4 py-2  text-sm text-base-content hover:bg-base-300"
-                        onClick={() => { DropChange(); setFormData({ ...formData, region: item?.id }); setBoolen({ ...boolens, region_name: item?.name }) }}
+                        // onClick={() => { setFormData({ ...formData, region: item?.id }); setBoolen({ ...boolens, region_name: item?.name }) }}
+                        onClick={() => { setBoolen({ ...boolens, region: false, region_name: item?.name }); setFormData({ ...formData, region: item?.id }) }}
+
                       >
                         {item.name}
                       </a>
@@ -343,7 +361,9 @@ const UserUpdateForm = ({ id }) => {
                         key={item?.id}
                         href="#"
                         className="block px-4 py-2 text-sm text-base-content hover:bg-base-300"
-                        onClick={() => { setBoolen({ ...boolens, type: !boolens.type }); setFormData({ ...formData, type_disease: item?.id }); setBoolen({ ...boolens, type_name: item?.name }) }}
+                        // onClick={() => { setBoolen({ ...boolens, type: !boolens.type }); setFormData({ ...formData, type_disease: item?.id }); setBoolen({ ...boolens, type_name: item?.name }) }}
+                        onClick={() => { setBoolen({ ...boolens, type: false, type_name: item?.name }); setFormData({ ...formData, type_disease: item?.id }) }}
+
                       >
                         {item.name}
                       </a>
@@ -442,7 +462,7 @@ const UserUpdateForm = ({ id }) => {
               <div key={index} className="flex items-center gap-2 mb-2 ">
                 <input
                   type="datetime-local"
-                  value={appointment.appointment_time}
+                  value={formatDateTime(formData?.appointments[index]?.appointment_time)}
                   onChange={(e) => handleAppointmentChange(index, e.target.value)}
                   className="input text-base-content input-bordered flex-1"
                   required
@@ -461,7 +481,7 @@ const UserUpdateForm = ({ id }) => {
               onClick={addAppointment}
               className="btn bg-green-500 text-white btn-sm"
             >
-              Add Appointment
+              Sana qo'shish
             </button>
           </div>
 
@@ -469,7 +489,7 @@ const UserUpdateForm = ({ id }) => {
 
         {/* Submit Button */}
         <button type="submit" className="btn my-7 py-5 bg-[orange] text-white w-full">
-          Submit
+          Saqlash
         </button>
       </div>
     </form >

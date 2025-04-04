@@ -1,4 +1,4 @@
-import { User, Camera, CircleAlert, CircleCheckBig, OctagonX, MapPin, Phone, MapPinHouse, Activity, Stethoscope, CalendarFold, SquarePen } from "lucide-react";
+import { User, Camera, CircleAlert, CircleCheckBig, OctagonX, MapPin, Phone, MapPinHouse, Activity, Stethoscope, CalendarFold, SquarePen, User2 } from "lucide-react";
 import UserSection from "./UserSection";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -81,11 +81,11 @@ const UserHeader = ({ apiData }) => {
       <UserSection icon={User} title={"Mijoz ma'lumotlari"}>
         <div className='flex flex-col  gap-5 w-full'>
           <div className="flex items-center w-[400px] flex-col gap-5 border  border-base-300 shadow-xl bg-base-100 rounded-md p-5">
-            <img
-              src={apiData?.photo ? apiData.photo : "https://randomuser.me/api/portraits/men/3.jpg"}
+            {apiData?.photo ? (<img
+              src={apiData?.photo}
               alt='Profile'
               className='rounded-4xl w-40 h-40 bg-cover'
-            />
+            />) : (<User2 size={100} className="text-base-content border rounded-lg border-base-content" />)}
             <h3 className='text-lg  font-semibold text-base-content'>{apiData?.full_name}</h3>
 
             <div className=" w-full flex justify-center ">
@@ -96,11 +96,11 @@ const UserHeader = ({ apiData }) => {
             </div>
             <ul className="mt-5 flex flex-col w-full gap-2">
 
-              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex items-center gap-2"><Phone size={16} /> Telefon:</span> {apiData?.phone_number}</li>
-              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex items-center gap-2"><MapPin size={16} />Viloyat:</span> {apiData?.region?.name}</li>
-              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex items-center gap-2"><MapPinHouse size={16} />Manzil:</span>{apiData?.address}</li>
-              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex items-center gap-2"><Stethoscope size={16} /> Murojat turi:</span>{apiData?.type_disease?.name}</li>
-              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex items-center gap-2"><CalendarFold size={16} />  Sana:</span>{formatDate(apiData?.created_at)}</li>
+              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex font-bold items-center gap-2"><Phone size={16} /> Telefon:</span> {apiData?.phone_number}</li>
+              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex font-bold items-center gap-2"><MapPin size={16} />Viloyat:</span> {apiData?.region?.name}</li>
+              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex font-bold items-center gap-2"><MapPinHouse size={16} />Manzil:</span>{apiData?.address}</li>
+              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex font-bold items-center gap-2"><Stethoscope size={16} /> Murojat turi:</span>{apiData?.type_disease?.name}</li>
+              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex font-bold items-center gap-2"><CalendarFold size={16} />  Sana:</span>{formatDate(apiData?.created_at)}</li>
             </ul>
 
           </div>
@@ -110,9 +110,9 @@ const UserHeader = ({ apiData }) => {
             <div className="flex flex-col gap-5 border border-base-300 bg-base-100 w-[400px] shadow-xl p-7 rounded-md text-base-content">
 
               <ul>
-                <li className="text-base-content flex items-center justify-between  gap-2"><span className="flex items-center gap-2"> Umumiy miqdor:</span> {apiData?.total_payment_due} so'm</li>
-                <li className="text-base-content flex items-center justify-between  gap-2"><span className="flex items-center gap-2"> To'langan qisim:</span> {apiData?.total_paid} so'm</li>
-                <li className={`${apiData?.remaining_debt < 0 ? "text-red-500" : "text-base-content"} text-base-content flex items-center justify-between  gap-2`}><span className="flex items-center gap-2"> To'lanmagan qisim:</span> {apiData?.remaining_debt} so'm</li>
+                <li className="text-base-content flex items-center justify-between  gap-2"><span className="flex items-center gap-2 font-bold"> Umumiy miqdor:</span> {apiData?.total_payment_due} so'm</li>
+                <li className="text-base-content flex items-center justify-between  gap-2"><span className="flex items-center gap-2 font-bold"> To'langan qisim:</span> {apiData?.total_paid} so'm</li>
+                <li className={`${apiData?.remaining_debt < 0 ? "text-red-500" : "text-base-content"} text-base-content flex items-center justify-between  gap-2`}><span className="flex items-center gap-2 font-bold"> To'lanmagan qisim:</span> {apiData?.remaining_debt} so'm</li>
 
               </ul>
               <PaymentForm id={apiData?.id} />
@@ -130,7 +130,7 @@ const UserHeader = ({ apiData }) => {
                 disabled={isLoading || apiData?.status == "treated"}
                 className={`px-4 py-2 bg-green-500 flex justify-center w-full h-12 text-white rounded hover:bg-green-600 ${apiData?.status == "treated" ? "opacity-50 cursor-not-allowed" : ""}`}
               >
-                {isLoading ? (<div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>) : "Statusni Yangilash"}
+                {isLoading ? (<div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>) : "Davolangan"}
               </button>
               <button className="px-4 py-2 w-full h-12 bg-indigo-500 flex justify-center items-center text-white rounded hover:bg-indigo-600"
                 onClick={() => navigate(`/update_user/${apiData?.id}`)}
