@@ -697,8 +697,10 @@ import { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
 import { DataService } from "../../config/DataService";
 import { endpoints } from "../../config/endpoinds";
+import { useNavigate } from "react-router-dom";
 
 const UserFrom = () => {
+  const navigate = useNavigate()
   const [boolens, setBoolen] = useState({ region: false, type: false, region_name: "Viloyat", type_name: "Turi" });
   const [formData, setFormData] = useState({
     full_name: "",
@@ -722,15 +724,36 @@ const UserFrom = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      console.log("Tanlangan fayl:", file); // Fayl obyektini log qilish
-      console.log("Fayl turi:", file.type);
-      console.log("Fayl nomi:", file.name);
 
       setFormData((prev) => ({ ...prev, photo: file }));
+      console.log("Selected File:", file);
+
+
+
     } else {
       console.error("Fayl tanlanmagan!");
     }
   };
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+
+  //     // Faylni o'qish jarayonida nimani qilish kerakligini aniqlash
+  //     reader.onload = () => {
+  //       const base64String = reader.result.split(",")[1]; // Base64 stringni olish
+  //       console.log("Base64 format:", base64String);
+
+  //       // Base64ni formData ga qo'shish
+  //       setFormData((prev) => ({ ...prev, photo: base64String }));
+  //     };
+
+  //     // Faylni o'qish jarayonini boshlash
+  //     reader.readAsDataURL(file);
+  //   } else {
+  //     console.error("Fayl tanlanmagan!");
+  //   }
+  // };
 
   const handleAppointmentChange = (index, value) => {
     const updatedAppointments = [...formData.appointments];
@@ -760,29 +783,9 @@ const UserFrom = () => {
     }
 
     // FormData yaratish
-    const data = new FormData();
-    data.append("full_name", formData.full_name);
-    data.append("phone_number", formData.phone_number);
 
-    // Raqamga o'zgartirish
-    data.append("region", Number(formData.region)); // Raqam shakliga o'zgartirish
-    data.append("type_disease", Number(formData.type_disease)); // Raqam shakliga o'zgartirish
 
-    data.append("address", formData.address);
-    data.append("face_condition", formData.face_condition);
-    data.append("medications_taken", formData.medications_taken);
-    data.append("home_care_items", formData.home_care_items);
-    data.append("total_payment_due", Number(formData.total_payment_due)); // Raqam shakliga o'zgartirish
 
-    if (formData.photo) {
-      data.append("photo", formData.photo);
-    }
-    data.append("appointments", JSON.stringify(formData.appointments));
-
-    // appointments massivini JSON string formatida qo‘shish
-    // formData.appointments.forEach((appointment, index) => {
-    //   data.append(`appointment_time`, JSON.stringify(appointment));
-    // });
 
     try {
       const response = await fetch(
@@ -791,48 +794,45 @@ const UserFrom = () => {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`, // Tokenni qo‘shish
+            'Content-Type': 'application/json',
           },
-          body: data, // FormData formatida yuboriladi
+          body: JSON.stringify(formData), // FormData formatida yuboriladi
         }
       );
 
       if (!response.ok) {
-        console.log("Bu data:", data);
         console.log("Photo:", formData.photo);
-        console.log("File type:", formData.photo.type); // Fayl turi (masalan, image/png)
-        console.log("File name:", formData.photo.name); // Fayl nomi
         throw new Error("Yuborishda xatolik yuz berdi");
       }
 
       const result = await response.json();
       toast.success("Ma'lumot muvaffaqiyatli yuborildi!");
-      setFormData({
-        full_name: "",
-        phone_number: "",
-        region: "",
-        address: "",
-        type_disease: "",
-        face_condition: "",
-        medications_taken: "",
-        home_care_items: "",
-        total_payment_due: "",
-        photo: null,
-        appointments: [{ appointment_time: "" }],
-      });
-      console.log(result);
+      // navigate(`/`)
+
+      // setFormData({
+      //   full_name: "",
+      //   phone_number: "",
+      //   region: "",
+      //   address: "",
+      //   type_disease: "",
+      //   face_condition: "",
+      //   medications_taken: "",
+      //   home_care_items: "",
+      //   total_payment_due: "",
+      //   photo: null,
+      //   appointments: [{ appointment_time: "" }],
+      // });
+      // console.log(result);
     } catch (error) {
-      console.error("Xatolik:", error);
+      // console.error("Xatolik:", error);
       toast.error("Yuborishda xatolik yuz berdi");
     }
   };
-  //////////////////////////////////////////
 
   const [apiDataIn, setApiDataIn] = useState([]);
   const fetchDataIn = async () => {
     const response = await DataService.get(endpoints.region);
-    console.log(response, "Notifif list");
     setApiDataIn(response);
-    // console.log(response?.results);
 
   };
   useEffect(() => {
@@ -846,9 +846,7 @@ const UserFrom = () => {
   const [apiDataDs, setApiDataDs] = useState([]);
   const fetchDataDs = async () => {
     const response = await DataService.get(endpoints.diseases);
-    console.log(response, "Notifif list");
     setApiDataDs(response);
-    // console.log(response?.results);
 
   };
   useEffect(() => {
@@ -856,7 +854,9 @@ const UserFrom = () => {
 
 
   }, []);
-  ///////////
+
+
+
 
   return (
     <form onSubmit={handleSubmit} className="p-4 mx-auto  space-y-4 border rounded-lg shadow">
@@ -871,27 +871,7 @@ const UserFrom = () => {
 
               <div className="mr-5 ">
                 {/* Photo */}
-                {/* <div className="mt-6 w-28 h-28 border border-gray-400 rounded-md relative flex justify-center items-center">
-                  {!formData?.photo ? (<CameraIcon className="w-8 h-8 text-gray-400" />) : ""}
-                  {formData?.photo ? (
-                    <img
-                      src={URL.createObjectURL(formData.photo)}
-                      alt="Uploaded"
-                      className="w-full h-full object-cover rounded-md"
-                    />
-                  ) : (
-                    <input
-                      type="file"
-                      id="photo"
-                      name="photo"
-                      onChange={handleFileChange}
-                      className="file-input text-base-content file-input-bordered w-full absolute z-10 h-full opacity-0"
-                    />
-                  )
 
-
-                  }
-                </div> */}
                 <div className="mt-6 w-28 h-28 border border-gray-400 rounded-md !bg-cover !bg-no-repeat relative bg-center flex justify-center items-center" style={{
                   backgroundImage: formData?.photo ? `url(${URL.createObjectURL(formData.photo)})` : "https://img.favpng.com/10/24/2/computer-icons-user-icon-design-male-png-favpng-grqs7j1MENUsCah7VD6XBWVst.jpg"
                 }}
@@ -910,9 +890,7 @@ const UserFrom = () => {
 
 
                 </div>
-                {/* <label htmlFor="photo" className="label px-1  w-full flex justify-center text-base-content font-medium">
-                  Photo
-                </label> */}
+
               </div>{/*fotka*/}
 
               <div className="w-full">
@@ -1166,7 +1144,9 @@ const UserFrom = () => {
 
 
         {/* Submit Button */}
-        <button type="submit" className="btn my-7 py-5 bg-[orange] text-white w-full">
+        <button type="submit" className="btn my-7 py-5 bg-[orange] text-white w-full"
+
+        >
           Saqlash
         </button>
       </div>

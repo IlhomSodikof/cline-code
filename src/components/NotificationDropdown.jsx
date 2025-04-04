@@ -2,12 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { Bell, Phone } from 'lucide-react';
 import { DataService } from "../config/DataService";
 import { endpoints } from "../config/endpoinds";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 
 const NotificationDropdown = () => {
   const [apiData, setApiData] = useState([]);
+  const navigate = useNavigate()
   const fetchData = async () => {
     const response = await DataService.get(endpoints.userCount);
     console.log(response, "Notifif");
@@ -135,8 +136,8 @@ const NotificationDropdown = () => {
             {apiDataIn?.map((item) =>
               <li key={item?.id}>
                 <a
-                  className="flex gap-6 items-center  border-b border-base-100 p-3 px-4.5 py-3 "
-                  href="#"
+                  className="flex gap-6 items-center cursor-pointer  border-b border-base-100 p-3 px-4.5 py-3 "
+                  onClick={() => navigate(`/details/${item?.id}`)}
                 >
                   <span className="relative z-1 block h-10 bg-base-100 shadow-md w-full max-w-10 rounded-full">
                     {item?.photo ? (<img

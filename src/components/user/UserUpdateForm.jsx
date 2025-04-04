@@ -6,8 +6,10 @@ import { useCallback, useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
 import { DataService } from "../../config/DataService";
 import { endpoints } from "../../config/endpoinds";
+import { useNavigate } from "react-router-dom";
 
 const UserUpdateForm = ({ id }) => {
+  const navigate = useNavigate();
   const [pato, setPato] = useState()
   const [apiData, setApiData] = useState([]);
   const [formData, setFormData] = useState({
@@ -176,6 +178,7 @@ const UserUpdateForm = ({ id }) => {
 
       const result = await response.json();
       toast.success("Ma'lumot muvaffaqiyatli yuborildi!");
+      navigate(`/details/${id}`)
 
       console.log(result);
     } catch (error) {
@@ -488,7 +491,9 @@ const UserUpdateForm = ({ id }) => {
         </div>
 
         {/* Submit Button */}
-        <button type="submit" className="btn my-7 py-5 bg-[orange] text-white w-full">
+        <button type="submit" className="btn my-7 py-5 bg-[orange] text-white w-full"
+
+        >
           Saqlash
         </button>
       </div>

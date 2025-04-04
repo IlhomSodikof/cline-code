@@ -34,8 +34,20 @@ const RecovredUser = () => {
       setNextPageUrl(response?.next || null); // Keyingi sahifa URL
       setPreviousPageUrl(response?.previous || null); // Oldingi sahifa URL
       setSearchCompleted(true); // Qidiruv tugallanganligini belgilash
-      localStorage.setItem("currentPageRe", page);
-      localStorage.setItem("searchTermRe", searchQuery);
+      sessionStorage.setItem("currentPageRe", page);
+      sessionStorage.setItem("searchTermRe", searchQuery);
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i); // i-index bo'yicha kalitni olish
+
+        // Faqat key "currentPageAc" va "searchTermAc" bo'lmasa o'chirish
+        if (key !== "currentPageRe" && key !== "searchTermRe") {
+          sessionStorage.removeItem(key); // sessionStorage'dan kalitni o'chirish
+          console.log(`${key} o'chirildi.`);
+        } else {
+          const value = sessionStorage.getItem(key); // Kalitning qiymatini olish
+          console.log(`Saqlangan kalit nomi: ${key}, Qiymati: ${value}`);
+        }
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -44,9 +56,21 @@ const RecovredUser = () => {
   };
   // Boshlang'ich ma'lumotlarni olish
   useEffect(() => {
-    const savedPage = Number(localStorage.getItem("currentPageRe")) || 1; // Sahifani o‘qish
-    const savedSearchTerm = localStorage.getItem("searchTermRe") || ""; // Qidiruv matnini o‘qish
+    const savedPage = Number(sessionStorage.getItem("currentPageRe")) || 1; // Sahifani o‘qish
+    const savedSearchTerm = sessionStorage.getItem("searchTermRe") || ""; // Qidiruv matnini o‘qish
 
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i); // i-index bo'yicha kalitni olish
+
+      // Faqat key "currentPageAc" va "searchTermAc" bo'lmasa o'chirish
+      if (key !== "currentPageRe" && key !== "searchTermRe") {
+        sessionStorage.removeItem(key); // sessionStorage'dan kalitni o'chirish
+        console.log(`${key} o'chirildi.`);
+      } else {
+        const value = sessionStorage.getItem(key); // Kalitning qiymatini olish
+        console.log(`Saqlangan kalit nomi: ${key}, Qiymati: ${value}`);
+      }
+    }
     setCurrentPage(savedPage);
     setSearchTerm(savedSearchTerm);
 
@@ -57,7 +81,7 @@ const RecovredUser = () => {
   const handleNextPage = () => {
     if (nextPageUrl) {
       const nextPage = currentPage + 1;
-      localStorage.setItem("currentPageRe", nextPage); // Sahifani saqlash
+      sessionStorage.setItem("currentPageRe", nextPage); // Sahifani saqlash
       setCurrentPage(nextPage);
       fetchData(searchTerm, nextPage); // Hozirgi qidiruv bilan keyingi sahifa
     }
@@ -66,7 +90,7 @@ const RecovredUser = () => {
   const handlePreviousPage = () => {
     if (previousPageUrl) {
       const prevPage = currentPage - 1;
-      localStorage.setItem("currentPageRe", prevPage);
+      sessionStorage.setItem("currentPageRe", prevPage);
       setCurrentPage(prevPage);
       fetchData(searchTerm, prevPage); // Hozirgi qidiruv bilan oldingi sahifa
     }
@@ -75,8 +99,8 @@ const RecovredUser = () => {
     const value = event.target.value;
     setSearchTerm(value); // Qidiruv matnini yangilash
     setCurrentPage(1); // Qidiruvni 1-sahifadan boshlash
-    localStorage.setItem("currentPageRe", 1); // LocalStorage'da saqlash
-    localStorage.setItem("searchTermRe", value);
+    sessionStorage.setItem("currentPageRe", 1); // sessionStorage'da saqlash
+    sessionStorage.setItem("searchTermRe", value);
     fetchData(value, 1); // Qidiruv bilan birinchi sahifa uchun API chaqiriladi
 
   };

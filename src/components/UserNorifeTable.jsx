@@ -63,7 +63,9 @@ const UserNotifeTable = ({ apiData }) => {
                       )}
                     </div>
                     <div className='ml-4'>
-                      <div className='text-sm font-medium text-base-content'>{item?.full_name}</div>
+                      <div className='text-sm hover:text-indigo-400 cursor-pointer font-medium text-base-content'
+                        onClick={() => navigate(`/details/${item?.id}`)}
+                      >{item?.full_name}</div>
                     </div>
                   </div>
                 </td>
@@ -83,7 +85,8 @@ const UserNotifeTable = ({ apiData }) => {
 
                       }`}
                   >
-                    {item?.status}
+                    {item.status == "debtor" ? "qarizdor" : user.status === "treated" ? "davolangan" : "to'langan"}
+
                   </span>
                 </td>
                 <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>

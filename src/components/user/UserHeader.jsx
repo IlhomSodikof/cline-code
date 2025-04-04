@@ -1,4 +1,4 @@
-import { User, Camera, CircleAlert, CircleCheckBig, OctagonX, MapPin, Phone, MapPinHouse, Activity, Stethoscope, CalendarFold, SquarePen, User2 } from "lucide-react";
+import { User, Camera, CircleAlert, CircleCheckBig, OctagonX, MapPin, Phone, MapPinHouse, Activity, Stethoscope, CalendarFold, SquarePen, User2, Calendar } from "lucide-react";
 import UserSection from "./UserSection";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -96,18 +96,34 @@ const UserHeader = ({ apiData }) => {
             </div>
             <ul className="mt-5 flex flex-col w-full gap-2">
 
-              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex font-bold items-center gap-2"><Phone size={16} /> Telefon:</span> {apiData?.phone_number}</li>
-              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex font-bold items-center gap-2"><MapPin size={16} />Viloyat:</span> {apiData?.region?.name}</li>
-              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex font-bold items-center gap-2"><MapPinHouse size={16} />Manzil:</span>{apiData?.address}</li>
-              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex font-bold items-center gap-2"><Stethoscope size={16} /> Murojat turi:</span>{apiData?.type_disease?.name}</li>
-              <li className="text-base-content flex items-center justify-between px-2 gap-2"><span className="flex font-bold items-center gap-2"><CalendarFold size={16} />  Sana:</span>{formatDate(apiData?.created_at)}</li>
+              <li className="text-base-content flex items-start justify-between px-2 gap-2 text-right"><span className="flex font-bold items-center gap-2"><Phone size={16} /> Telefon:</span> {apiData?.phone_number}</li>
+              <li className="text-base-content flex items-start justify-between px-2 gap-2 text-right"><span className="flex font-bold items-center gap-2"><MapPin size={16} />Viloyat:</span> {apiData?.region?.name}</li>
+              <li className="text-base-content flex items-start justify-between px-2 gap-2 text-right"><span className="flex font-bold items-center gap-2"><MapPinHouse size={16} />Manzil:</span>{apiData?.address}</li>
+              <li className="text-base-content flex items-start justify-between px-2 gap-2 text-right"><span className="flex font-bold items-center gap-2"><Stethoscope size={16} /> Murojat turi:</span>{apiData?.type_disease?.name}</li>
+              <li className="text-base-content flex items-start justify-between px-2 gap-2 text-right"><span className="flex font-bold items-center gap-2"><CalendarFold size={16} />  Sana:</span>{formatDate(apiData?.created_at)}</li>
             </ul>
 
-          </div>
+          </div    >
+          {apiData?.appointments?.length > 0 && <div>
+            <h2 className="text-base-content font-semibold text-lg">Ko'rik vaqtlari</h2>
 
+            <div
+              className="flex flex-col gap-5 border border-base-300 bg-base-100 w-[400px] shadow-xl p-7 pt-2 rounded-md text-base-content"
+
+            >
+              <ul className="mt-5 flex flex-col w-full gap-2">
+                {apiData?.appointments?.map((item) =>
+                  <li className="text-base-content flex items-start justify-between px-2 gap-2 text-right"><span className="flex font-bold items-center gap-2"><Calendar size={16} /> Tshrif vaqti:</span> {formatDate(item?.appointment_time)}</li>
+
+                )}
+              </ul>
+            </div>
+
+          </div>}
           <div>
             <h2 className="text-base-content font-semibold text-lg">To'lovlar</h2>
-            <div className="flex flex-col gap-5 border border-base-300 bg-base-100 w-[400px] shadow-xl p-7 rounded-md text-base-content">
+            <div
+              className="flex flex-col gap-5 border border-base-300 bg-base-100 w-[400px] shadow-xl p-7 rounded-md text-base-content">
 
               <ul>
                 <li className="text-base-content flex items-center justify-between  gap-2"><span className="flex items-center gap-2 font-bold"> Umumiy miqdor:</span> {apiData?.total_payment_due} so'm</li>
