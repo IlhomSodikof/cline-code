@@ -1,13 +1,11 @@
-import { User, Camera, CircleAlert, CircleCheckBig, OctagonX, MapPin, Phone, MapPinHouse, Activity, Stethoscope, CalendarFold, SquarePen, User2, Calendar } from "lucide-react";
+import { User, MapPin, Phone, MapPinHouse, Activity, Stethoscope, CalendarFold, SquarePen, User2, Calendar } from "lucide-react";
 import UserSection from "./UserSection";
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-// import { endpoints } from "../config/endpoints";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { endpoints } from "../../config/endpoinds";
-import { DataService } from "../../config/DataService";
+import { useNavigate, useParams } from "react-router-dom";
+
 import DangerZone from "./DangerZone";
 import PaymentForm from "../PaymentForm";
+import { toast } from "sonner";
 
 const UserHeader = ({ apiData }) => {
   const navigate = useNavigate()
@@ -26,7 +24,6 @@ const UserHeader = ({ apiData }) => {
     return `${day}.${month}.${year} ${hour}:${minute}:${second}`;
   };
   // const route = useParams()
-  console.log("ichkarida", apiData);
 
   const [apiDataIn, setApiDataIn] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,12 +50,20 @@ const UserHeader = ({ apiData }) => {
 
       if (!response.ok) {
         throw new Error(`HTTP Error: ${response.status}`);
+        toast.error("Error updating status:", response.status);
       }
 
       const result = await response.json();
       setApiDataIn(result);
-      console.log("Response:", result);
-      toast.success("Status muvaffaqiyatli yangilandi!");
+
+      if (result?.message == "Bemor hali qarzdor.") {
+        toast.error("Bemor hali qarzdor");
+      } else {
+        toast.success("Status muvaffaqiyatli yangilandi!");
+        setTimeout(() => {
+          location.reload()
+        }, 3000);
+      }
     } catch (error) {
       toast.error("Error updating status:", error);
     } finally {
@@ -69,10 +74,7 @@ const UserHeader = ({ apiData }) => {
 
 
 
-  useEffect(() => {
-    console.log("zzz");
 
-  }, [apiData?.total_paid]);
 
 
   return (
@@ -113,7 +115,7 @@ const UserHeader = ({ apiData }) => {
             >
               <ul className="mt-5 flex flex-col w-full gap-2">
                 {apiData?.appointments?.map((item) =>
-                  <li className="text-base-content flex items-start justify-between px-2 gap-2 text-right"><span className="flex font-bold items-center gap-2"><Calendar size={16} /> Tshrif vaqti:</span> {formatDate(item?.appointment_time)}</li>
+                  <li key={item?.id} className="text-base-content flex items-start justify-between px-2 gap-2 text-right"><span className="flex font-bold items-center gap-2"><Calendar size={16} /> Tshrif vaqti:</span> {formatDate(item?.appointment_time)}</li>
 
                 )}
               </ul>
@@ -142,7 +144,7 @@ const UserHeader = ({ apiData }) => {
             <div className="flex  gap-5 border border-base-300 bg-base-100 w-[400px] shadow-xl p-7 rounded-md text-base-content">
 
               <button
-                onClick={() => { fetchData(apiData?.id); location.reload() }}
+                onClick={() => fetchData(apiData?.id)}
                 disabled={isLoading || apiData?.status == "treated"}
                 className={`px-4 py-2 bg-green-500 flex justify-center w-full h-12 text-white rounded hover:bg-green-600 ${apiData?.status == "treated" ? "opacity-50 cursor-not-allowed" : ""}`}
               >

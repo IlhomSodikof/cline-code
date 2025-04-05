@@ -5,7 +5,6 @@ import { toast, Toaster } from "sonner";
 const DeleteBtn = ({ userId }) => {
   const navigate = useNavigate();
   const handleDelete = async () => {
-    console.log(userId);
 
     const authToken = localStorage.getItem("authToken"); // Tokenni localStorage-dan olish
 

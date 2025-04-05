@@ -36,11 +36,13 @@ const PaymentForm = ({ id }) => {
       setResponseMessage("To'lov muvaffaqiyatli amalga oshirildi!");
       toast.success("To'lov muvaffaqiyatli amalga oshirildi!");
       setAmount("");
-      console.log("Response:", result);
-      location.reload();
+
+      setTimeout(() => {
+        location.reload();
+
+      }, 3000);
 
     } catch (error) {
-      console.error("Error processing payment:", error);
       setResponseMessage("Xatolik yuz berdi. Qayta urinib ko'ring.");
       toast.error("Xatolik yuz berdi. Qayta urinib ko'ring.");
     } finally {
@@ -51,8 +53,7 @@ const PaymentForm = ({ id }) => {
 
   return (
     <div>
-      {/* <Toaster /> */}
-      {/* <h1 className="text-base-content text-lg">To'lovni amalga oshirish</h1> */}
+
       <input
         type="number"
         value={amount}

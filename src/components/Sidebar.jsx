@@ -10,14 +10,12 @@ const SIDEBAR_ITEMS = [
   { name: "Fa'ol mijozlar", icon: UserCheck, color: "#F59E0B", href: "/active_users" },
   { name: "Qarizdor mijozlar", icon: UserMinus, color: "#EF4444", href: "/debtor_users" },
   { name: "Sog'aygan mijozlar", icon: UserRound, color: "#10B981", href: "/recovered_patients" },
-  // { name: "Bildirish nimalar", icon: Bell, color: "orange", href: "/recovered_patients" },
 ];
 
 const Sidebar = () => {
   const { themeSd } = useContext(GlobalContext)
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const { theme } = useContext(GlobalContext)
 
 
   return (

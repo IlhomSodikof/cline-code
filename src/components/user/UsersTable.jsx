@@ -58,7 +58,7 @@ const UsersTable = ({ apiData }) => {
                     <div className='flex-shrink-0 h-10 w-10'>
                       {user?.photo ? (
                         <div className='h-10 w-10 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-semibold'>
-                          <img className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-semibold" src={user?.photo} alt="" />
+                          <img className="w-full h-full rounded-full bg-gradient-to-r from-purple-400 to-blue-500 object-cover flex items-center justify-center text-white font-semibold" src={user?.photo} alt="" />
                         </div>
                       ) : (
                         <div className='h-10 w-10 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-semibold'>

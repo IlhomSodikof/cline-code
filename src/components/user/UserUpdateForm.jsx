@@ -22,8 +22,8 @@ const UserUpdateForm = ({ id }) => {
     medications_taken: apiData?.medications_taken,
     home_care_items: apiData?.home_care_items,
     total_payment_due: apiData?.total_payment_due,
-    photo: null,
-    appointments: [{ appointment_time: "" }],
+    photo: "",
+    new_appointments: [{ appointment_time: "" }],
   });
   const fetchData = async () => {
     const response = await DataService.get(endpoints.patientByid(id));
@@ -47,8 +47,8 @@ const UserUpdateForm = ({ id }) => {
       medications_taken: apiData?.medications_taken,
       home_care_items: apiData?.home_care_items,
       total_payment_due: apiData?.total_payment_due,
-      photo: null,
-      appointments: apiData?.appointments || [{ appointment_time: "" }],
+      photo: "",
+      new_appointments: [{ appointment_time: "" }],
     })
     setBoolen({ ...boolens, region_name: apiData?.region?.name ? apiData?.region?.name : "Viloyat", type_name: apiData?.type_disease?.name ? apiData?.type_disease?.name : "Turi" });
 
@@ -66,8 +66,8 @@ const UserUpdateForm = ({ id }) => {
         medications_taken: apiData.medications_taken || "",
         home_care_items: apiData.home_care_items || "",
         total_payment_due: apiData.total_payment_due || 0,
-        photo: null,
-        appointments: apiData?.appointments || [{ appointment_time: "" }],
+        photo: "",
+        new_appointments: [{ appointment_time: "" }],
 
       });
       setBoolen({ ...boolens, region_name: apiData?.region?.name ? apiData?.region?.name : "Viloyat", type_name: apiData?.type_disease?.name ? apiData?.type_disease?.name : "Turi" });
@@ -84,6 +84,7 @@ const UserUpdateForm = ({ id }) => {
 
   const [boolens, setBoolen] = useState({ region: false, type: false, region_name: "Viloyat", type_name: "Turi" });
 
+  const [images, setImages] = useState("")
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -104,22 +105,44 @@ const UserUpdateForm = ({ id }) => {
     }
   };
 
+  // const handleFileChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setImages(file)
+
+  //     const reader = new FileReader();
+
+  //     // Faylni o'qish jarayonida nimani qilish kerakligini aniqlash
+  //     reader.onload = () => {
+  //       const base64String = reader.result.split(",")[1]; // Base64 stringni olish
+  //       console.log("Base64 format:", base64String);
+
+  //       // Base64ni formData ga qo'shish
+  //       setFormData((prev) => ({ ...prev, photo: base64String }));
+  //     };
+
+  //     // Faylni o'qish jarayonini boshlash
+  //     reader.readAsDataURL(file);
+  //   } else {
+  //     console.error("Fayl tanlanmagan!");
+  //   }
+  // };
   const handleAppointmentChange = (index, value) => {
-    const updatedAppointments = [...formData.appointments];
+    const updatedAppointments = [...formData.new_appointments];
     updatedAppointments[index].appointment_time = value;
-    setFormData((prev) => ({ ...prev, appointments: updatedAppointments }));
+    setFormData((prev) => ({ ...prev, new_appointments: updatedAppointments }));
   };
 
   const addAppointment = () => {
     setFormData((prev) => ({
       ...prev,
-      appointments: [...prev.appointments, { appointment_time: "" }],
+      new_appointments: [...prev.new_appointments, { appointment_time: "" }],
     }));
   };
 
   const removeAppointment = (index) => {
-    const updatedAppointments = formData.appointments.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, appointments: updatedAppointments }));
+    const updatedAppointments = formData.new_appointments.filter((_, i) => i !== index);
+    setFormData((prev) => ({ ...prev, new_appointments: updatedAppointments }));
   };
 
   const handleSubmit = async (e) => {
@@ -132,29 +155,7 @@ const UserUpdateForm = ({ id }) => {
     }
 
     // FormData yaratish
-    const data = new FormData();
-    data.append("full_name", formData.full_name);
-    data.append("phone_number", formData.phone_number);
 
-    // Raqamga o'zgartirish
-    data.append("region", Number(formData.region)); // Raqam shakliga o'zgartirish
-    data.append("type_disease", Number(formData.type_disease)); // Raqam shakliga o'zgartirish
-
-    data.append("address", formData.address);
-    data.append("face_condition", formData.face_condition);
-    data.append("medications_taken", formData.medications_taken);
-    data.append("home_care_items", formData.home_care_items);
-    data.append("total_payment_due", Number(formData.total_payment_due)); // Raqam shakliga o'zgartirish
-
-    if (formData.photo) {
-      data.append("photo", formData.photo);
-    }
-    data.append("appointments", JSON.stringify(formData.appointments));
-
-    // appointments massivini JSON string formatida qo‘shish
-    // formData.appointments.forEach((appointment, index) => {
-    //   data.append(`appointment_time`, JSON.stringify(appointment));
-    // });
 
     try {
       const response = await fetch(
@@ -163,26 +164,23 @@ const UserUpdateForm = ({ id }) => {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`, // Tokenni qo‘shish
+            'Content-Type': 'application/json',
+
           },
-          body: data, // FormData formatida yuboriladi
+          body: JSON.stringify(formData), // FormData formatida yuboriladi
         }
       );
 
       if (!response.ok) {
-        console.log("Bu data:", data);
-        console.log("Photo:", formData.photo);
-        console.log("File type:", formData.photo.type); // Fayl turi (masalan, image/png)
-        console.log("File name:", formData.photo.name); // Fayl nomi
+        toast.error("Yuborishda xatolik yuz berdi");
         throw new Error("Yuborishda xatolik yuz berdi");
       }
 
       const result = await response.json();
       toast.success("Ma'lumot muvaffaqiyatli yuborildi!");
-      navigate(`/details/${id}`)
+      // navigate(`/details/${id}`)
 
-      console.log(result);
     } catch (error) {
-      console.error("Xatolik:", error);
       toast.error("Yuborishda xatolik yuz berdi");
     }
   };
@@ -191,9 +189,7 @@ const UserUpdateForm = ({ id }) => {
   const [apiDataIn, setApiDataIn] = useState([]);
   const fetchDataIn = async () => {
     const response = await DataService.get(endpoints.region);
-    console.log(response, "Notifif list");
     setApiDataIn(response);
-    // console.log(response?.results);
 
   };
   useEffect(() => {
@@ -207,11 +203,11 @@ const UserUpdateForm = ({ id }) => {
       medications_taken: apiData?.medications_taken,
       home_care_items: apiData?.home_care_items,
       total_payment_due: apiData?.total_payment_due,
-      photo: null,
-      appointments: apiData?.appointments || [{ appointment_time: "" }],
+      photo: "",
+      new_appointments: [{ appointment_time: "" }],
 
     })
-    setFormData({ ...formData, region: apiData?.region?.id ? apiData?.region?.id : null, type_disease: apiData?.type_disease?.id ? apiData?.type_disease?.id : null })
+    // setFormData({ ...formData, region: apiData?.region?.id ? apiData?.region?.id : "", type_disease: apiData?.type_disease?.id ? apiData?.type_disease?.id : "" })
     setBoolen({ ...boolens, region_name: apiData?.region?.name ? apiData?.region?.name : "Viloyat", type_name: apiData?.type_disease?.name ? apiData?.type_disease?.name : "Turi" });
     fetchDataIn();
 
@@ -223,7 +219,6 @@ const UserUpdateForm = ({ id }) => {
   const [apiDataDs, setApiDataDs] = useState([]);
   const fetchDataDs = async () => {
     const response = await DataService.get(endpoints.diseases);
-    console.log(response, "Notifif list");
     setApiDataDs(response);
     // console.log(response?.results);
 
@@ -234,9 +229,7 @@ const UserUpdateForm = ({ id }) => {
 
   }, []);
   ///////////
-  console.log(formData.appointments);
   const formatDateTime = (date) => {
-    console.log(date);
     if (date) {
       return new Date(date).toISOString().slice(0, 16);
 
@@ -256,7 +249,7 @@ const UserUpdateForm = ({ id }) => {
               <div className="mr-5 ">
                 {/* Photo */}
                 <div className="mt-6 w-28 h-28 border border-gray-400 rounded-md !bg-cover !bg-no-repeat relative bg-center flex justify-center items-center" style={{
-                  backgroundImage: pato ? `url(${URL.createObjectURL(pato)})` : `url(${apiData?.photo})`,
+                  backgroundImage: images ? `url(${URL.createObjectURL(images)})` : `url(${apiData?.photo})`,
                 }}
                 >
                   <CameraIcon className="w-8 h-8 text-base-content" />
@@ -461,11 +454,11 @@ const UserUpdateForm = ({ id }) => {
               ></textarea>
             </div>
             <label className="label px-1 text-base-content font-medium mt-3">Ko'rik Vaqti</label>
-            {formData.appointments.map((appointment, index) => (
+            {formData.new_appointments.map((appointment, index) => (
               <div key={index} className="flex items-center gap-2 mb-2 ">
                 <input
                   type="datetime-local"
-                  value={formatDateTime(formData?.appointments[index]?.appointment_time)}
+                  value={formData?.new_appointments[index]?.appointment_time}
                   onChange={(e) => handleAppointmentChange(index, e.target.value)}
                   className="input text-base-content input-bordered flex-1"
                   required
